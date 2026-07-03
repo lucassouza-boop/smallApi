@@ -24,6 +24,13 @@ todos_db = {}
 next_id = 1
 
 
+def reset_app():
+    """Reseta a aplicação para o estado inicial (usado em testes)"""
+    global next_id
+    todos_db.clear()
+    next_id = 1
+
+
 @app.get("/", tags=["Root"])
 def read_root():
     """Endpoint raiz da API"""
