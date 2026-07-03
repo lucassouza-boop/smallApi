@@ -143,6 +143,17 @@ def get_stats():
     }
 
 
+@app.get("/api/todos/search", response_model=List[Todo], tags=["Todos"])
+def search_todos(query: str):
+    """Busca tarefas pelo título ou descrição (case-insensitive)."""
+    if not query:
+        return []
+
+    q = query.lower()
+    results = [t for t in todos_db.values() if q in (t.get("title") or "").lower() or q in (t.get("description") or "").lower()]
+    return results
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

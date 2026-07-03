@@ -256,3 +256,24 @@ class TestStats:
         assert data["total"] == 4
         assert data["completed"] == 2
         assert data["pending"] == 2
+
+
+class TestSearchTodos:
+    """Testes para o endpoint de busca de tarefas"""
+
+    def test_search_todos_found(self):
+        client.post("/api/todos", json={"title": "Comprar leite", "description": "Leite integral"})
+        client.post("/api/todos", json={"title": "Estudar Python", "description": "FastAPI"})
+
+        # Buscar por 'leite'
+        response = client.get("/api/todos/search?query=leite")
+        assert response.status_code == 200
+        todos = response.json()
+        assert len(todos) == 1
+        assert todos[0]["title"] == "Comprar leite"
+
+    def test_search_todos_empty(self):
+        # Sem tarefas criadas
+        response = client.get("/api/todos/search?query=algo")
+        assert response.status_code == 200
+        assert response.json() == []
